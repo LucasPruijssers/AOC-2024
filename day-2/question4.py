@@ -1,50 +1,59 @@
-def handle_edgecase_positive(input):
-    i = 0
-    while i < len(input) - 1:
-        if int(input[i]) == int(input[i + 1]) or int(input[i]) > int(input[i + 1]) or abs(int(input[i]) - int(input[i + 1])) > 3:
-            input.pop(i)
-            break
-        else:
-            i += 1
-
-def handle_edgecase_negative(input):
-    i = 0
-    while i < len(input) - 1:
-        if int(input[i]) == int(input[i + 1]) or int(input[i]) < int(input[i + 1]) or abs(int(input[i]) - int(input[i + 1])) > 3:
-            input.pop(i)
-            break
-        else:
-            i += 1
-
 def is_ascending(input):
     for i in range(len(input) - 1):
-        if(int(input[i]) == int(input[i+1]) or int(input[i]) > int(input[i+1]) or abs(int(input[i]) - int(input[i+1])) > 3):
+        if(int(input[i]) == int(input[i+1])):
+            return False
+        if(int(input[i]) > int(input[i+1])):
+            return False
+        if (abs(int(input[i]) - int(input[i+1])) > 3):
             return False
     return True
 def is_descending(input):
     for i in range(len(input) - 1):
-        if(int(input[i]) == int(input[i+1]) or int(input[i]) < int(input[i+1]) or abs(int(input[i]) - int(input[i+1]) > 3)):
+        if(int(input[i]) == int(input[i+1])):
+            return False
+        if(int(input[i]) < int(input[i+1])):
+            return False
+        if (abs(int(input[i]) - int(input[i+1]) > 3)):
             return False
     return True
 
-file = open("input.txt", "r")
-count = 0
-while(file):
-    line = file.readline()
-    if(line == ""):
-        break
-    levels = line.split()
-    # First we check positive
-    positive = levels.copy()
-    handle_edgecase_positive(positive)
-    if(is_ascending(positive)):
-        count+= 1
-        continue
-    negative = levels.copy()
-    handle_edgecase_negative(negative)
-    if(is_descending(negative)):
-        count+=1
-        continue
-print(count)
+# get all combinations of not safe entries
+def checkAllCombinations(list):
+    count = 0
+    # list contains couple strings of stuff
+    for entry in list:
+        combinations = []
+        for i in range(len(entry)) :
+            copy = entry.copy()
+            copy.pop(i)
+            combinations.append(copy)
+        
+        for combination in combinations:
+            if(question1(combination)):
+                count += 1
+                break
+    return count        
 
+def question1(line):
+    if(is_ascending(line) or is_descending(line)):
+        return True
+    else:
+        return False
 
+def question2():
+    count = 0
+    unsafeEntries = []
+    file = open("input.txt", "r")
+    while(file):
+        line = file.readline()
+        if(line == ""):
+            break
+        levels = line.split()
+        if(question1(levels)):
+            count+=1
+        else:
+            unsafeEntries.append(levels)      
+    combinations = checkAllCombinations(unsafeEntries)
+    total = count + combinations
+    print (total)
+question2()
